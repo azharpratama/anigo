@@ -1,13 +1,12 @@
-version: '3.9'
-
 services:
-  postgres:
+  database:
     hostname: postgres
     image: postgres:latest
+    restart: always
     ports:
       - ${DB_PORT}:5432
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./docker/volumes/:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
@@ -15,26 +14,8 @@ services:
     networks:
       - app-network
         
-  app:
-    hostname: app
-    container_name: anigo
-    build:
-      context: . 
-      dockerfile: Dockerfile
-    ports:
-      - ${GOLANG_PORT}:8888
-    restart: always
-    volumes:
-      -  ./:/app
-    depends_on: 
-      - postgres
-    env_file:
-      - .env
-    networks:
-      - app-network
-
 volumes:
-  app_vol:
+  postgres_data:
 
 networks:
   app-network:
